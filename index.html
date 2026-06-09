@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NJROTC Academic Postal</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:    #0a0f1a;
+  --ink2:   #111827;
+  --ink3:   #1e293b;
+  --gold:   #d4a017;
+  --gold2:  #f0c040;
+  --goldbg: rgba(212,160,23,0.1);
+  --goldborder: rgba(212,160,23,0.25);
+  --red:    #c0392b;
+  --green:  #1a7a4a;
+  --blue:   #1e3a5f;
+  --muted:  #4b6080;
+  --text:   #9ab0c8;
+  --white:  #e8f0f8;
+  --border: rgba(255,255,255,0.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--ink);
+  color:var(--text);
+  min-height:100vh;
+}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;}
+.screen.active{display:flex;flex-direction:column;}
+
+/* ══ SHARED ══ */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;height:56px;
+  background:var(--ink2);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.topbar-brand{
+  display:flex;align-items:center;gap:10px;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:20px;letter-spacing:3px;color:var(--gold);
+}
+.topbar-brand .anchor{font-size:20px;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+
+/* buttons */
+.btn{
+  padding:10px 22px;border:none;border-radius:3px;
+  font-family:'Bebas Neue',sans-serif;font-size:15px;
+  letter-spacing:2px;cursor:pointer;transition:all .18s;
+}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#a87c10);color:var(--ink);box-shadow:0 3px 14px rgba(212,160,23,0.25);}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(212,160,23,0.4);}
+.btn-gold:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text);}
+.btn-outline:hover{border-color:var(--goldborder);color:var(--gold);}
+.btn-sm{padding:6px 14px;font-size:12px;letter-spacing:1.5px;}
+.btn-red{background:rgba(192,57,43,0.15);border:1px solid rgba(192,57,43,0.3);color:#e07060;}
+.btn-red:hover{background:rgba(192,57,43,0.28);}
+.btn-green{background:rgba(26,122,74,0.15);border:1px solid rgba(26,122,74,0.3);color:#4ee09a;}
+.btn-green:hover{background:rgba(26,122,74,0.28);}
+
+/* inputs */
+label{display:block;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+input[type=text],input[type=number],input[type=password],select,textarea{
+  width:100%;padding:10px 13px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(212,160,23,0.2);
+  border-radius:3px;color:var(--white);
+  font-family:'Inter',sans-serif;font-size:14px;
+  transition:all .18s;
+}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);background:rgba(212,160,23,0.05);box-shadow:0 0 0 3px rgba(212,160,23,0.08);}
+select option{background:var(--ink2);}
+textarea{min-height:72px;resize:vertical;line-height:1.5;}
+.fg{margin-bottom:14px;}
+
+/* cards */
+.card{background:var(--ink2);border:1px solid var(--border);border-radius:4px;padding:24px;}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--gold);margin-bottom:16px;}
+
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.modal-bg.open{display:flex;}
+.modal{background:var(--ink2);border:1px solid var(--goldborder);border-top:3px solid var(--gold);border-radius:4px;padding:30px;width:90%;max-width:460px;animation:fadeUp .3s ease both;}
+.modal h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--gold);margin-bottom:18px;}
+.modal-btns{display:flex;gap:8px;margin-top:16px;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+/* misc */
+.err{background:rgba(192,57,43,0.1);border:1px solid rgba(192,57,43,0.3);color:#e07060;padding:9px 13px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:11px;margin-bottom:12px;display:none;}
+.tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;padding:3px 9px;border-radius:2px;}
+.tag-ns1{background:rgba(30,58,95,0.5);border:1px solid rgba(30,58,95,0.8);color:#7ab0e0;}
+.tag-ns2{background:rgba(26,122,74,0.2);border:1px solid rgba(26,122,74,0.4);color:#4ee09a;}
+.tag-ns3{background:rgba(212,160,23,0.12);border:1px solid rgba(212,160,23,0.3);color:var(--gold2);}
+.tag-ns4{background:rgba(192,57,43,0.12);border:1px solid rgba(192,57,43,0.3);color:#e08070;}
+.divider{height:1px;background:var(--border);margin:20px 0;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--muted);border-radius:2px;}
+
+/* ══════════════════════
+   LANDING
+══════════════════════ */
+#s-land{align-items:center;justify-content:center;}
+.land-wrap{width:100%;max-width:420px;padding:32px 24px;animation:fadeUp .4s ease both;}
+.land-hero{text-align:center;margin-bottom:36px;}
+.land-hero .anchor{font-size:52px;display:block;filter:drop-shadow(0 0 18px var(--gold));margin-bottom:12px;}
+.land-hero h1{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:5px;color:var(--gold);line-height:1;}
+.land-hero p{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--muted);margin-top:6px;text-transform:uppercase;}
+.land-divider{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.2;margin:28px 0;}
+.land-section-title{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.land-box{background:var(--ink2);border:1px solid var(--border);border-radius:4px;padding:20px;margin-bottom:12px;}
+.land-link{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--muted);text-align:center;margin-top:8px;cursor:pointer;transition:color .2s;}
+.land-link:hover{color:var(--gold);}
+
+/* ══════════════════════
+   TEAM QUIZ
+══════════════════════ */
+#s-quiz{padding:0;}
+.quiz-bar{
+  background:var(--ink2);border-bottom:1px solid var(--border);
+  padding:12px 28px;display:flex;align-items:center;
+  justify-content:space-between;flex-shrink:0;
+}
+.quiz-bar-left{display:flex;align-items:center;gap:16px;}
+.quiz-team{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--gold);}
+.quiz-progress{display:flex;align-items:center;gap:10px;}
+.prog-bar{width:140px;height:4px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .4s ease;}
+.prog-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);}
+.quiz-body{flex:1;overflow-y:auto;display:flex;align-items:flex-start;justify-content:center;padding:36px 24px;}
+.quiz-card{width:100%;max-width:680px;animation:fadeUp .3s ease both;}
+.q-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:10px;}
+.q-text{font-size:20px;line-height:1.55;color:var(--white);margin-bottom:6px;font-weight:500;}
+.q-image{width:100%;max-height:300px;object-fit:contain;border-radius:3px;margin-bottom:18px;border:1px solid var(--border);}
+.multi-hint{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--muted);margin-bottom:12px;padding:5px 10px;background:rgba(0,0,0,0.2);border-radius:2px;border-left:2px solid var(--goldborder);display:none;}
+.choices{display:flex;flex-direction:column;gap:9px;margin-bottom:20px;}
+.choice{
+  background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.08);
+  border-radius:4px;padding:13px 16px;display:flex;align-items:flex-start;
+  gap:13px;cursor:pointer;transition:all .16s;font-size:15px;color:var(--text);
+}
+.choice:hover{border-color:var(--goldborder);background:var(--goldbg);color:var(--white);}
+.choice.sel{border-color:var(--gold);background:var(--goldbg);color:var(--white);}
+.choice.correct{border-color:#1a7a4a;background:rgba(26,122,74,0.12);color:#4ee09a;cursor:default;}
+.choice.wrong{border-color:#c0392b;background:rgba(192,57,43,0.1);color:#e07060;cursor:default;}
+.choice.reveal{border-color:#1a7a4a;background:rgba(26,122,74,0.07);color:#4ee09a;cursor:default;}
+.choice.disabled:not(.sel):not(.correct):not(.wrong):not(.reveal){cursor:default;}
+.choice.disabled:hover:not(.sel):not(.correct):not(.wrong):not(.reveal){border-color:rgba(255,255,255,0.08);background:rgba(255,255,255,0.025);color:var(--text);}
+.choice-letter{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);flex-shrink:0;width:18px;}
+.feedback{padding:11px 15px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:12px;margin-bottom:14px;display:none;animation:fadeUp .2s ease both;}
+.feedback.ok{background:rgba(26,122,74,0.1);border:1px solid rgba(26,122,74,0.3);color:#4ee09a;}
+.feedback.bad{background:rgba(192,57,43,0.08);border:1px solid rgba(192,57,43,0.3);color:#e07060;}
+.feedback.show{display:block;}
+.action-row{display:flex;gap:10px;}
+.submit-btn{padding:11px 28px;background:linear-gradient(135deg,var(--gold),#a87c10);color:var(--ink);border:none;border-radius:3px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;cursor:pointer;transition:all .18s;display:none;}
+.submit-btn:hover{transform:translateY(-1px);}
+.submit-btn.show{display:inline-block;}
+.next-btn{padding:10px 26px;background:transparent;border:1px solid var(--goldborder);border-radius:3px;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:var(--text);cursor:pointer;transition:all .18s;display:none;}
+.next-btn:hover{color:var(--gold);border-color:var(--gold);}
+.next-btn.show{display:inline-block;}
+
+/* ══════════════════════
+   RESULTS / LEADERBOARD
+══════════════════════ */
+#s-results{align-items:center;justify-content:flex-start;overflow-y:auto;}
+.results-body{width:100%;max-width:640px;margin:0 auto;padding:40px 24px;animation:fadeUp .4s ease both;}
+.res-score{font-family:'Bebas Neue',sans-serif;font-size:88px;line-height:1;color:var(--gold);text-shadow:0 0 40px rgba(212,160,23,0.3);text-align:center;}
+.res-label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);text-align:center;margin-top:4px;}
+.grade-tag{display:inline-block;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;padding:5px 18px;border-radius:2px;margin-top:12px;}
+.g-A{background:rgba(26,122,74,0.15);border:1px solid rgba(26,122,74,0.4);color:#4ee09a;}
+.g-B{background:rgba(212,160,23,0.12);border:1px solid rgba(212,160,23,0.3);color:var(--gold2);}
+.g-C{background:rgba(255,165,0,0.1);border:1px solid rgba(255,165,0,0.3);color:#ffa500;}
+.g-F{background:rgba(192,57,43,0.1);border:1px solid rgba(192,57,43,0.3);color:#e07060;}
+.res-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0;}
+.res-stat{background:var(--ink2);border:1px solid var(--border);border-radius:3px;padding:14px;text-align:center;}
+.res-stat .sv{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--white);}
+.res-stat .sl{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);margin-top:2px;text-transform:uppercase;}
+
+/* leaderboard */
+.lb-section{margin-bottom:24px;}
+.lb-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.lb-title .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);animation:pulse 1.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.lb-row{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--ink2);border:1px solid var(--border);border-radius:3px;margin-bottom:6px;transition:border-color .2s;}
+.lb-row.me{border-color:var(--goldborder);background:var(--goldbg);}
+.lb-rank{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--muted);width:28px;text-align:center;flex-shrink:0;}
+.lb-rank.gold{color:var(--gold);}
+.lb-rank.silver{color:#a0b8c8;}
+.lb-rank.bronze{color:#c09060;}
+.lb-name{flex:1;font-size:14px;font-weight:500;color:var(--white);}
+.lb-score{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);}
+.lb-pending{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--muted);padding:10px 14px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:3px;margin-bottom:6px;}
+
+/* ══════════════════════
+   VIEWER
+══════════════════════ */
+#s-viewer{padding:0;overflow-y:auto;}
+.viewer-body{max-width:900px;margin:0 auto;padding:32px 24px;}
+.viewer-body h2{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--gold);margin-bottom:4px;}
+.bank-select-row{display:flex;gap:10px;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;}
+.bank-select-row select{max-width:300px;margin-bottom:0;}
+.viewer-lb-wrap{background:var(--ink2);border:1px solid var(--border);border-radius:4px;padding:20px;}
+.live-badge{display:inline-flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gold);padding:4px 10px;border:1px solid var(--goldborder);border-radius:2px;margin-bottom:16px;}
+.live-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 1.2s ease-in-out infinite;}
+
+/* ══════════════════════
+   ADMIN
+══════════════════════ */
+#s-admin{padding:0;overflow-y:auto;}
+.admin-body{max-width:960px;margin:0 auto;padding:32px 24px;}
+.admin-body h2{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--gold);margin-bottom:20px;}
+.a-tabs{display:flex;gap:3px;background:rgba(0,0,0,0.3);padding:3px;border-radius:4px;width:fit-content;margin-bottom:22px;flex-wrap:wrap;}
+.a-tab{padding:8px 16px;background:transparent;border:none;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-radius:3px;transition:all .2s;}
+.a-tab.on{background:var(--gold);color:var(--ink);}
+.a-panel{display:none;}
+.a-panel.on{display:block;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.bank-card{background:var(--ink2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:16px 18px;cursor:pointer;transition:all .2s;margin-bottom:10px;}
+.bank-card:hover,.bank-card.sel{border-left-color:var(--gold);background:var(--ink3);}
+.bank-card-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--white);}
+.bank-card-meta{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);margin-top:4px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.q-item{background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.06);border-radius:3px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.q-item-body{flex:1;}
+.q-item-q{font-size:13px;color:var(--text);line-height:1.5;}
+.q-item-meta{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);margin-top:3px;}
+.team-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--ink2);border:1px solid var(--border);border-radius:3px;margin-bottom:6px;}
+.team-row-name{flex:1;font-size:13px;color:var(--white);}
+.team-code{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gold);padding:3px 8px;background:var(--goldbg);border-radius:2px;}
+.ci-row{display:flex;gap:6px;align-items:center;margin-bottom:8px;}
+.ci-lbl{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);width:18px;flex-shrink:0;}
+.ci-chk{width:16px;height:16px;flex-shrink:0;accent-color:var(--gold);cursor:pointer;}
+.ci-row input[type=text]{margin:0;font-size:13px;padding:8px 10px;}
+.img-upload-area{border:2px dashed rgba(212,160,23,0.3);border-radius:4px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:10px;}
+.img-upload-area:hover{border-color:var(--gold);background:var(--goldbg);}
+.img-upload-area input{display:none;}
+.img-preview{width:100%;max-height:160px;object-fit:contain;border-radius:3px;margin-top:10px;display:none;}
+.add-choice-btn{background:rgba(26,122,74,0.1);border:1px solid rgba(26,122,74,0.3);color:#4ee09a;padding:6px 14px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;transition:all .2s;}
+.add-choice-btn:hover{background:rgba(26,122,74,0.22);}
+.save-msg{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4ee09a;margin-left:10px;display:none;}
+.empty{text-align:center;padding:32px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);}
+.section-head{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.ns-tabs{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap;}
+.ns-tab{padding:5px 12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);cursor:pointer;transition:all .2s;}
+.ns-tab.on{background:var(--goldbg);border-color:var(--goldborder);color:var(--gold);}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;}
+.status-done{background:#1a7a4a;}
+.status-pending{background:#d4a017;animation:pulse 1.5s ease-in-out infinite;}
+</style>
+</head>
+<body>
+
+<!-- ══ LANDING ══ -->
+<div id="s-land" class="screen active">
+  <div class="land-wrap">
+    <div class="land-hero">
+      <span class="anchor">⚓</span>
+      <h1>Academic Postal</h1>
+      <p>NJROTC Scholastic Competition</p>
+    </div>
+    <div class="land-divider"></div>
+
+    <!-- Team entry -->
+    <div class="land-section-title">Teams — Enter Your Code</div>
+    <div class="land-box">
+      <div class="err" id="teamErr">Team code not found.</div>
+      <div class="fg"><label>Team Code</label>
+        <input type="text" id="teamCode" placeholder="e.g. ALPHA-7" style="text-transform:uppercase;letter-spacing:2px;font-family:'IBM Plex Mono',monospace;"
+          onkeydown="if(event.key==='Enter')teamEnter()">
+      </div>
+      <button class="btn btn-gold" style="width:100%;" onclick="teamEnter()">ENTER →</button>
+    </div>
+
+    <div class="land-divider"></div>
+
+    <!-- Viewer entry -->
+    <div class="land-section-title">Live Leaderboard</div>
+    <div class="land-box">
+      <div class="err" id="viewErr">Incorrect password.</div>
+      <div class="fg"><label>Viewer Password</label>
+        <input type="password" id="viewPass" placeholder="Enter viewer password"
+          onkeydown="if(event.key==='Enter')viewerEnter()">
+      </div>
+      <button class="btn btn-outline" style="width:100%;" onclick="viewerEnter()">VIEW LEADERBOARD</button>
+    </div>
+
+    <div class="land-link" onclick="openAdminLogin()">Admin / Instructor ›</div>
+  </div>
+</div>
+
+<!-- ══ QUIZ ══ -->
+<div id="s-quiz" class="screen">
+  <div class="quiz-bar">
+    <div class="quiz-bar-left">
+      <div class="quiz-team" id="qTeamName">TEAM</div>
+      <div class="quiz-progress">
+        <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+        <span class="prog-num" id="progNum">1/10</span>
+      </div>
+    </div>
+    <div id="qBankTitle" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;"></div>
+  </div>
+  <div class="quiz-body">
+    <div class="quiz-card">
+      <div class="q-eyebrow" id="qEyebrow">QUESTION 1</div>
+      <div class="q-text" id="qText"></div>
+      <img class="q-image" id="qImage" src="" alt="" style="display:none;">
+      <div class="multi-hint" id="multiHint">SELECT ALL THAT APPLY</div>
+      <div class="choices" id="choicesList"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="action-row">
+        <button class="submit-btn" id="submitBtn" onclick="submitAnswer()">SUBMIT</button>
+        <button class="next-btn" id="nextBtn" onclick="nextQ()"><span id="nextTxt">NEXT →</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RESULTS ══ -->
+<div id="s-results" class="screen">
+  <div class="topbar">
+    <div class="topbar-brand"><span class="anchor">⚓</span> Academic Postal</div>
+    <div class="topbar-right">
+      <button class="btn btn-outline btn-sm" onclick="show('s-land')">← Home</button>
+    </div>
+  </div>
+  <div class="results-body">
+    <div style="text-align:center;margin-bottom:28px;">
+      <div class="res-score" id="resScore">0%</div>
+      <div class="res-label" id="resLabel">0 of 10 correct</div>
+      <div class="grade-tag" id="resGrade"></div>
+    </div>
+    <div class="res-stats">
+      <div class="res-stat"><div class="sv" id="resC">0</div><div class="sl">Correct</div></div>
+      <div class="res-stat"><div class="sv" id="resW">0</div><div class="sl">Wrong</div></div>
+      <div class="res-stat"><div class="sv" id="resT">0</div><div class="sl">Questions</div></div>
+    </div>
+    <div class="divider"></div>
+    <div id="leaderboardWrap"></div>
+    <div id="wrongWrap" style="margin-top:24px;"></div>
+  </div>
+</div>
+
+<!-- ══ VIEWER ══ -->
+<div id="s-viewer" class="screen">
+  <div class="topbar">
+    <div class="topbar-brand"><span class="anchor">⚓</span> Live Leaderboard</div>
+    <div class="topbar-right">
+      <button class="btn btn-outline btn-sm" onclick="show('s-land')">← Home</button>
+    </div>
+  </div>
+  <div class="viewer-body">
+    <h2>LEADERBOARD</h2>
+    <div class="bank-select-row">
+      <div style="flex:1;max-width:300px;">
+        <label>Quiz Bank</label>
+        <select id="viewerBankSel" onchange="loadViewerLB()"></select>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="loadViewerLB()">↻ Refresh</button>
+    </div>
+    <div class="viewer-lb-wrap">
+      <div class="live-badge"><span class="dot"></span> LIVE</div>
+      <div id="viewerLB"><div class="empty">Select a quiz bank above</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADMIN ══ -->
+<div id="s-admin" class="screen">
+  <div class="topbar">
+    <div class="topbar-brand"><span class="anchor">⚓</span> Admin Panel</div>
+    <div class="topbar-right">
+      <div id="adminDbStatus" style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);"></div>
+      <button class="btn btn-outline btn-sm" onclick="show('s-land')">← Home</button>
+    </div>
+  </div>
+  <div class="admin-body">
+    <div class="a-tabs">
+      <button class="a-tab on"  onclick="aTab('banks')">📋 Banks</button>
+      <button class="a-tab" onclick="aTab('questions')">❓ Questions</button>
+      <button class="a-tab" onclick="aTab('teams')">👥 Teams</button>
+      <button class="a-tab" onclick="aTab('settings')">⚙ Settings</button>
+    </div>
+
+    <!-- BANKS -->
+    <div class="a-panel on" id="ap-banks">
+      <div class="grid2" style="margin-bottom:20px;">
+        <div class="card">
+          <div class="card-title">NEW BANK</div>
+          <div class="fg"><label>Title</label><input type="text" id="bkTitle" placeholder="e.g. WWII Atlantic Theater"></div>
+          <div class="fg"><label>NS Level</label>
+            <select id="bkNs">
+              <option value="NS1">NS-1</option><option value="NS2">NS-2</option>
+              <option value="NS3">NS-3</option><option value="NS4">NS-4</option>
+              <option value="MIXED">Mixed</option>
+            </select>
+          </div>
+          <div class="fg"><label>Questions Per Team Session</label>
+            <input type="number" id="bkNum" value="10" min="1" max="100" style="width:100px;">
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <button class="btn btn-gold btn-sm" onclick="saveBank()">CREATE BANK</button>
+            <span class="save-msg" id="bkMsg">✓ Created</span>
+          </div>
+        </div>
+        <div>
+          <div class="section-head">Existing Banks</div>
+          <div id="bankList"><div class="empty">No banks yet</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUESTIONS -->
+    <div class="a-panel" id="ap-questions">
+      <div class="fg" style="max-width:300px;margin-bottom:20px;">
+        <label>Bank</label>
+        <select id="qBankSel" onchange="loadQList()"></select>
+      </div>
+      <div class="grid2" style="align-items:start;">
+        <div class="card">
+          <div class="card-title">ADD QUESTION</div>
+          <div class="fg"><label>Question Text</label><textarea id="aqQ" placeholder="Enter question..."></textarea></div>
+          <div class="img-upload-area" onclick="document.getElementById('imgFile').click()">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--muted);">📷 Click to attach image (optional)</div>
+            <input type="file" id="imgFile" accept="image/*" onchange="previewImg(event)">
+            <img class="img-preview" id="imgPreview">
+          </div>
+          <div>
+            <div class="section-head">CHOICES — check correct answer(s)</div>
+            <div id="aqChoices"></div>
+            <button class="add-choice-btn" onclick="addChoiceRow()" style="margin-bottom:12px;">+ Add Choice</button>
+          </div>
+          <div class="fg">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+              <input type="checkbox" id="aqMulti" style="width:auto;accent-color:var(--gold);">
+              <span style="font-size:13px;color:var(--muted);">Multiple correct answers</span>
+            </label>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <button class="btn btn-gold btn-sm" onclick="saveQuestion()">SAVE QUESTION</button>
+            <span class="save-msg" id="qMsg">✓ Saved</span>
+          </div>
+        </div>
+        <div>
+          <div class="section-head">Questions in this bank</div>
+          <div id="qList"><div class="empty">Select a bank above</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAMS -->
+    <div class="a-panel" id="ap-teams">
+      <div class="grid2" style="align-items:start;">
+        <div class="card">
+          <div class="card-title">ADD TEAM</div>
+          <div class="fg"><label>Bank</label><select id="tBankSel"></select></div>
+          <div class="fg"><label>Team Name</label><input type="text" id="tName" placeholder="e.g. Platoon Alpha"></div>
+          <div class="fg"><label>Team Code (you choose)</label>
+            <input type="text" id="tCode" placeholder="e.g. ALPHA-7" style="text-transform:uppercase;font-family:'IBM Plex Mono',monospace;letter-spacing:2px;">
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <button class="btn btn-gold btn-sm" onclick="saveTeam()">ADD TEAM</button>
+            <span class="save-msg" id="tMsg">✓ Added</span>
+          </div>
+        </div>
+        <div>
+          <div class="section-head">Teams</div>
+          <div class="fg" style="max-width:300px;">
+            <label>Filter by Bank</label>
+            <select id="tFilterBank" onchange="loadTeamList()"><option value="">All</option></select>
+          </div>
+          <div id="teamList"><div class="empty">No teams yet</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="a-panel" id="ap-settings">
+      <div class="card" style="max-width:400px;">
+        <div class="card-title">PASSWORDS</div>
+        <div class="fg"><label>Change Admin Password</label>
+          <input type="password" id="newAdminPass" placeholder="New admin password">
+        </div>
+        <div class="fg"><label>Change Viewer Password</label>
+          <input type="password" id="newViewPass" placeholder="New viewer password">
+        </div>
+        <button class="btn btn-gold btn-sm" onclick="savePasswords()">SAVE PASSWORDS</button>
+        <span class="save-msg" id="passMsg">✓ Saved</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADMIN LOGIN MODAL ══ -->
+<div class="modal-bg" id="adminModal">
+  <div class="modal">
+    <h3>ADMIN LOGIN</h3>
+    <div class="err" id="adminErr">Incorrect password.</div>
+    <div class="fg"><label>Password</label>
+      <input type="password" id="adminPass" placeholder="Admin password"
+        onkeydown="if(event.key==='Enter')doAdminLogin()">
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-gold" onclick="doAdminLogin()">ENTER</button>
+      <button class="btn btn-outline" onclick="closeModal('adminModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TEAM START MODAL ══ -->
+<div class="modal-bg" id="teamModal">
+  <div class="modal">
+    <h3 id="tmTitle">READY?</h3>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:8px;" id="tmSub"></div>
+    <div style="background:rgba(0,0,0,0.3);border-radius:3px;padding:14px;margin-bottom:16px;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:4px;">QUIZ BANK</div>
+      <div id="tmBank" style="font-size:15px;color:var(--white);font-weight:500;"></div>
+      <div id="tmCount" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);margin-top:4px;"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-gold" onclick="beginQuiz()">BEGIN →</button>
+      <button class="btn btn-outline" onclick="closeModal('teamModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  SUPABASE CONFIG
+// ══════════════════════════════════════════
+const SUPA_URL = 'https://hlkccudapupctkdkfodr.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhsa2NjdWRhcHVwY3RrZGtmb2RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5OTM0NTQsImV4cCI6MjA5NjU2OTQ1NH0.d2mKAHjhRLmLt2YKQD-mUtUnM5kSEumb9K9ie1FJraY';
+
+async function supa(path, opts={}){
+  try {
+    const headers = {
+      'apikey': SUPA_KEY,
+      'Authorization': 'Bearer '+SUPA_KEY,
+      'Content-Type': 'application/json',
+    };
+    if(opts.method==='POST') headers['Prefer'] = 'return=representation';
+    if(opts.method==='PATCH') headers['Prefer'] = 'return=representation';
+    const url = SUPA_URL+'/rest/v1'+path;
+    const r = await fetch(url, {
+      method: opts.method||'GET',
+      headers,
+      body: opts.body||undefined,
+    });
+    if(!r.ok){
+      const e=await r.text();
+      console.error('Supabase error:', r.status, r.statusText, '\nPath:', path, '\nResponse:', e);
+      return null;
+    }
+    const t = await r.text();
+    return t ? JSON.parse(t) : [];
+  } catch(e){
+    console.error('Supabase fetch failed:', e.message, '\nPath:', path);
+    return null;
+  }
+}
+
+async function supaStorage(bucket, file, path){
+  try {
+    const r = await fetch(`${SUPA_URL}/storage/v1/object/${bucket}/${path}`, {
+      method:'POST',
+      headers:{ 'apikey':SUPA_KEY, 'Authorization':'Bearer '+SUPA_KEY, 'Content-Type':file.type },
+      body: file,
+    });
+    if(!r.ok) return null;
+    return `${SUPA_URL}/storage/v1/object/public/${bucket}/${path}`;
+  } catch(e){ return null; }
+}
+
+// ══════════════════════════════════════════
+//  PASSWORDS (stored in localStorage)
+// ══════════════════════════════════════════
+const DEFAULT_ADMIN_PASS  = 'njrotc2024';
+const DEFAULT_VIEWER_PASS = 'viewlive';
+
+function getAdminPass()  { return localStorage.getItem('ap_admin_pass')  || DEFAULT_ADMIN_PASS; }
+function getViewerPass() { return localStorage.getItem('ap_viewer_pass') || DEFAULT_VIEWER_PASS; }
+
+function savePasswords(){
+  const a = document.getElementById('newAdminPass').value.trim();
+  const v = document.getElementById('newViewPass').value.trim();
+  if(a) localStorage.setItem('ap_admin_pass', a);
+  if(v) localStorage.setItem('ap_viewer_pass', v);
+  const msg = document.getElementById('passMsg');
+  msg.style.display='inline'; setTimeout(()=>msg.style.display='none',2000);
+}
+
+// ══════════════════════════════════════════
+//  SCREEN SWITCHING
+// ══════════════════════════════════════════
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+// ══════════════════════════════════════════
+//  LANDING
+// ══════════════════════════════════════════
+async function teamEnter(){
+  const code = document.getElementById('teamCode').value.trim().toUpperCase();
+  if(!code) return;
+  document.getElementById('teamErr').style.display='none';
+  const rows = await supa('/ab_teams?code=eq.'+encodeURIComponent(code)+'&select=*,ab_banks(*)');
+  if(!rows || !rows.length){ document.getElementById('teamErr').style.display='block'; return; }
+  TEAM = rows[0];
+  BANK = rows[0].ab_banks;
+  // Check if already finished
+  const existing = await supa('/ab_sessions?team_id=eq.'+TEAM.id+'&finished_at=not.is.null');
+  if(existing && existing.length){
+    alert('This team has already completed the quiz. See the leaderboard for results.');
+    return;
+  }
+  // Show start modal
+  document.getElementById('tmTitle').textContent = TEAM.name.toUpperCase();
+  document.getElementById('tmSub').textContent = 'Code: '+TEAM.code;
+  document.getElementById('tmBank').textContent = BANK.title;
+  document.getElementById('tmCount').textContent = BANK.num_questions + ' questions — randomized for your team';
+  document.getElementById('teamModal').classList.add('open');
+}
+
+async function beginQuiz(){
+  closeModal('teamModal');
+  // Load all questions for this bank
+  const allQ = await supa('/ab_questions?bank_id=eq.'+BANK.id+'&select=*');
+  if(!allQ || !allQ.length){ alert('No questions in this bank yet.'); return; }
+  // Fisher-Yates shuffle then slice
+  const shuffled = allQ.slice();
+  for(let i=shuffled.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
+  }
+  const num = Math.min(BANK.num_questions, shuffled.length);
+  QUIZ_QS = shuffled.slice(0,num).map(q=>({
+    ...q,
+    choices: typeof q.choices==='string'?JSON.parse(q.choices):q.choices,
+    answer:  typeof q.answer ==='string'?JSON.parse(q.answer) :q.answer,
+  }));
+  QUIZ_IDX = 0;
+  QUIZ_ANSWERS = [];
+  // Create session row
+  const sess = await supa('/ab_sessions', {
+    method:'POST',
+    body: JSON.stringify({
+      team_id: TEAM.id,
+      bank_id: BANK.id,
+      question_ids: JSON.stringify(QUIZ_QS.map(q=>q.id)),
+    })
+  });
+  SESSION_ID = sess && sess[0] ? sess[0].id : null;
+  document.getElementById('qTeamName').textContent = TEAM.name;
+  document.getElementById('qBankTitle').textContent = BANK.title;
+  showQ(0);
+  show('s-quiz');
+}
+
+function viewerEnter(){
+  const p = document.getElementById('viewPass').value;
+  document.getElementById('viewErr').style.display='none';
+  if(p !== getViewerPass()){ document.getElementById('viewErr').style.display='block'; return; }
+  loadViewerBanks();
+  show('s-viewer');
+}
+
+function openAdminLogin(){
+  document.getElementById('adminPass').value='';
+  document.getElementById('adminErr').style.display='none';
+  document.getElementById('adminModal').classList.add('open');
+  setTimeout(()=>document.getElementById('adminPass').focus(),100);
+}
+async function doAdminLogin(){
+  const p = document.getElementById('adminPass').value;
+  if(p !== getAdminPass()){
+    document.getElementById('adminErr').style.display='block';
+    document.getElementById('adminPass').value=''; return;
+  }
+  closeModal('adminModal');
+  await initAdmin();
+  show('s-admin');
+}
+
+// ══════════════════════════════════════════
+//  QUIZ STATE
+// ══════════════════════════════════════════
+let TEAM = null, BANK = null, QUIZ_QS = [], QUIZ_IDX = 0, QUIZ_ANSWERS = [], SESSION_ID = null;
+
+function showQ(idx){
+  const q = QUIZ_QS[idx];
+  const total = QUIZ_QS.length;
+  document.getElementById('qEyebrow').textContent = `QUESTION ${idx+1} OF ${total}`;
+  document.getElementById('qText').textContent = q.question;
+  document.getElementById('progFill').style.width = `${(idx/total)*100}%`;
+  document.getElementById('progNum').textContent = `${idx+1}/${total}`;
+
+  // Image
+  const img = document.getElementById('qImage');
+  if(q.image_url){ img.src=q.image_url; img.style.display='block'; }
+  else { img.style.display='none'; img.src=''; }
+
+  // Multi hint
+  document.getElementById('multiHint').style.display = q.multi?'block':'none';
+
+  // Shuffle choices
+  const shuffled = q.choices.slice();
+  for(let i=shuffled.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
+  }
+  QUIZ_QS[idx]._shuffled = shuffled;
+  QUIZ_QS[idx]._selected = [];
+
+  document.getElementById('choicesList').innerHTML = shuffled.map((c,i)=>`
+    <div class="choice" id="ch-${c.l}" onclick="pickC('${c.l}',${q.multi})">
+      <span class="choice-letter">${'ABCDEFGH'[i]}</span>
+      <span>${c.t}</span>
+    </div>`).join('');
+
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('submitBtn').className='submit-btn';
+  document.getElementById('nextBtn').className='next-btn';
+  document.getElementById('nextTxt').textContent = idx===total-1?'FINISH →':'NEXT →';
+}
+
+function pickC(letter, multi){
+  if(document.getElementById('feedback').classList.contains('show')) return;
+  const q = QUIZ_QS[QUIZ_IDX];
+  if(!multi){
+    document.querySelectorAll('.choice').forEach(c=>c.classList.remove('sel'));
+    q._selected=[letter];
+    document.getElementById('ch-'+letter).classList.add('sel');
+  } else {
+    const el=document.getElementById('ch-'+letter);
+    if(q._selected.includes(letter)){
+      q._selected=q._selected.filter(l=>l!==letter); el.classList.remove('sel');
+    } else {
+      q._selected.push(letter); el.classList.add('sel');
+    }
+  }
+  document.getElementById('submitBtn').className = q._selected.length?'submit-btn show':'submit-btn';
+}
+
+function submitAnswer(){
+  const q = QUIZ_QS[QUIZ_IDX];
+  const sel = q._selected||[];
+  if(!sel.length) return;
+  const correct = q.answer.slice().sort().join(',')===sel.slice().sort().join(',');
+  QUIZ_ANSWERS.push({qId:q.id,qText:q.question,choices:q.choices,selected:sel,answer:q.answer,correct});
+
+  document.querySelectorAll('.choice').forEach(c=>c.classList.add('disabled'));
+  (q._shuffled||[]).forEach(c=>{
+    const el=document.getElementById('ch-'+c.l);
+    if(!el) return;
+    if(q.answer.includes(c.l)) el.classList.add(sel.includes(c.l)?'correct':'reveal');
+    else if(sel.includes(c.l)) el.classList.add('wrong');
+  });
+
+  const fb=document.getElementById('feedback');
+  if(correct){
+    fb.textContent='✓ Correct!';
+    fb.className='feedback ok show';
+  } else {
+    const ans=q.answer.map(l=>{const c=q.choices.find(x=>x.l===l);return c?c.t:l;}).join(' / ');
+    fb.textContent=`✗ Incorrect — Correct answer: ${ans}`;
+    fb.className='feedback bad show';
+  }
+  document.getElementById('submitBtn').className='submit-btn';
+  document.getElementById('nextBtn').className='next-btn show';
+}
+
+async function nextQ(){
+  const next = QUIZ_IDX+1;
+  if(next >= QUIZ_QS.length){ await finishQuiz(); return; }
+  QUIZ_IDX = next;
+  showQ(next);
+}
+
+async function finishQuiz(){
+  const total = QUIZ_ANSWERS.length;
+  const correct = QUIZ_ANSWERS.filter(a=>a.correct).length;
+  const pct = total?Math.round(correct/total*100):0;
+  // Save session
+  if(SESSION_ID){
+    await supa('/ab_sessions?id=eq.'+SESSION_ID, {
+      method:'PATCH',
+      body: JSON.stringify({
+        answers: JSON.stringify(QUIZ_ANSWERS),
+        score: correct, total, pct,
+        finished_at: new Date().toISOString()
+      })
+    });
+  }
+  showResults(correct, total, pct);
+}
+
+async function showResults(correct, total, pct){
+  const grade=pct>=90?'A':pct>=80?'B':pct>=70?'C':'F';
+  const gText={A:'★ EXCELLENT',B:'✓ GOOD',C:'△ PASSING',F:'✗ NEEDS WORK'}[grade];
+  document.getElementById('resScore').textContent=pct+'%';
+  document.getElementById('resLabel').textContent=`${correct} of ${total} correct · ${TEAM.name}`;
+  const gEl=document.getElementById('resGrade');
+  gEl.textContent=gText; gEl.className='grade-tag g-'+grade;
+  document.getElementById('resC').textContent=correct;
+  document.getElementById('resW').textContent=total-correct;
+  document.getElementById('resT').textContent=total;
+
+  // Load leaderboard
+  await renderLeaderboard('leaderboardWrap', BANK.id, TEAM.id);
+
+  // Wrong answers
+  const wrong=QUIZ_ANSWERS.filter(a=>!a.correct);
+  const ww=document.getElementById('wrongWrap');
+  if(wrong.length){
+    ww.innerHTML=`<div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:#e07060;margin-bottom:12px;">✗ REVIEW THESE (${wrong.length})</div>`+
+      wrong.map(a=>{
+        const ans=a.answer.map(l=>{const c=a.choices.find(x=>x.l===l);return c?c.t:l;}).join(', ');
+        const yours=a.selected.map(l=>{const c=a.choices.find(x=>x.l===l);return c?c.t:l;}).join(', ');
+        return `<div style="background:var(--ink2);border:1px solid rgba(192,57,43,0.15);border-left:3px solid var(--red);border-radius:3px;padding:13px 15px;margin-bottom:8px;">
+          <div style="font-size:13px;color:var(--white);margin-bottom:8px;">${a.qText}</div>
+          <div style="display:flex;gap:16px;flex-wrap:wrap;">
+            <div><div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Your Answer</div><div style="color:#e07060;font-size:13px;">${yours}</div></div>
+            <div><div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Correct Answer</div><div style="color:#4ee09a;font-size:13px;">${ans}</div></div>
+          </div>
+        </div>`;
+      }).join('');
+  } else {
+    ww.innerHTML='';
+  }
+  show('s-results');
+}
+
+// ══════════════════════════════════════════
+//  LEADERBOARD (shared)
+// ══════════════════════════════════════════
+async function renderLeaderboard(targetId, bankId, highlightTeamId=null){
+  const el=document.getElementById(targetId);
+  if(!el) return;
+  // Get all teams for this bank
+  const teams = await supa('/ab_teams?bank_id=eq.'+bankId+'&select=*');
+  // Get all finished sessions for this bank
+  const sessions = await supa('/ab_sessions?bank_id=eq.'+bankId+'&select=*&order=pct.desc');
+  if(!teams||!sessions) return;
+
+  const finished = sessions.filter(s=>s.finished_at);
+  const finishedTeamIds = new Set(finished.map(s=>s.team_id));
+  const pending = teams.filter(t=>!finishedTeamIds.has(t.id));
+
+  let html = '';
+
+  if(finished.length){
+    html += `<div class="lb-title"><span class="dot"></span> RESULTS</div>`;
+    finished.forEach((s,i)=>{
+      const t = teams.find(x=>x.id===s.team_id);
+      const name = t?t.name:'Unknown';
+      const rankClass = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+      const isMe = s.team_id===highlightTeamId;
+      html += `<div class="lb-row${isMe?' me':''}">
+        <div class="lb-rank ${rankClass}">${i+1}</div>
+        <div class="lb-name">${name}${isMe?' <span style="font-family:\'IBM Plex Mono\',monospace;font-size:9px;color:var(--gold);"> ← YOU</span>':''}</div>
+        <div class="lb-score">${s.pct}%</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);margin-left:6px;">${s.score}/${s.total}</div>
+      </div>`;
+    });
+  }
+
+  if(pending.length){
+    html += `<div class="lb-title" style="margin-top:18px;">⏳ RESULTS PENDING</div>`;
+    pending.forEach(t=>{
+      html += `<div class="lb-pending"><span class="status-dot status-pending"></span>${t.name}</div>`;
+    });
+  }
+
+  if(!finished.length && !pending.length) html = '<div class="empty">No teams registered for this bank</div>';
+  el.innerHTML = html;
+}
+
+// ══════════════════════════════════════════
+//  VIEWER
+// ══════════════════════════════════════════
+async function loadViewerBanks(){
+  const banks = await supa('/ab_banks?select=*&order=created_at.desc');
+  const sel = document.getElementById('viewerBankSel');
+  sel.innerHTML = '<option value="">— Select bank —</option>' + (banks||[]).map(b=>`<option value="${b.id}">${b.title}</option>`).join('');
+}
+
+async function loadViewerLB(){
+  const bankId = document.getElementById('viewerBankSel').value;
+  const el = document.getElementById('viewerLB');
+  if(!bankId){ el.innerHTML='<div class="empty">Select a quiz bank above</div>'; return; }
+  el.innerHTML='<div class="empty">Loading...</div>';
+  await renderLeaderboard('viewerLB', parseInt(bankId));
+}
+
+// Auto-refresh viewer every 15s
+setInterval(()=>{
+  if(document.getElementById('s-viewer').classList.contains('active')){
+    loadViewerLB();
+  }
+}, 15000);
+
+// ══════════════════════════════════════════
+//  ADMIN
+// ══════════════════════════════════════════
+let _banks=[], _selBankId=null;
+
+async function initAdmin(){
+  // Test connection first
+  const statusEl = document.getElementById('adminDbStatus');
+  statusEl.textContent = 'Connecting...';
+  const test = await supa('/ab_banks?select=id&limit=1');
+  if(test === null){
+    statusEl.textContent = '✗ DB connection failed — check console';
+    statusEl.style.color = '#e07060';
+    alert('Could not connect to Supabase. Make sure:\n1. The SQL tables were created\n2. Your Supabase URL and key are correct\n\nCheck the browser console (F12) for details.');
+    return;
+  }
+  statusEl.textContent = '✓ Connected';
+  statusEl.style.color = '#4ee09a';
+  await loadBanks();
+}
+
+function aTab(t){
+  document.querySelectorAll('.a-tab').forEach((b,i)=>b.classList.toggle('on',['banks','questions','teams','settings'][i]===t));
+  document.querySelectorAll('.a-panel').forEach(p=>p.classList.remove('on'));
+  document.getElementById('ap-'+t).classList.add('on');
+  if(t==='questions') loadQList();
+  if(t==='teams')     loadTeamList();
+}
+
+// ── Banks ──
+async function loadBanks(){
+  const rows = await supa('/ab_banks?select=*&order=created_at.desc');
+  _banks = rows||[];
+  renderBankList();
+  populateBankSelects();
+}
+
+function renderBankList(){
+  const el=document.getElementById('bankList');
+  if(!_banks.length){el.innerHTML='<div class="empty">No banks yet</div>';return;}
+  el.innerHTML=_banks.map(b=>`
+    <div class="bank-card${_selBankId===b.id?' sel':''}" onclick="selBank(${b.id})">
+      <div class="bank-card-name">${b.title}</div>
+      <div class="bank-card-meta">
+        <span class="tag tag-${b.ns_level.toLowerCase()}">${b.ns_level}</span>
+        <span>${b.num_questions} questions per team</span>
+        <button class="btn btn-red btn-sm" style="padding:3px 10px;font-size:10px;" onclick="event.stopPropagation();deleteBank(${b.id})">Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+function populateBankSelects(){
+  const opts='<option value="">— Select —</option>'+_banks.map(b=>`<option value="${b.id}">${b.title}</option>`).join('');
+  ['qBankSel','tBankSel','tFilterBank'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){ const prev=el.value; el.innerHTML=opts; if(prev) el.value=prev; }
+  });
+}
+
+function selBank(id){
+  _selBankId=id;
+  renderBankList();
+  document.getElementById('qBankSel').value=id;
+  loadQList();
+}
+
+async function saveBank(){
+  const title=document.getElementById('bkTitle').value.trim();
+  const ns=document.getElementById('bkNs').value;
+  const num=parseInt(document.getElementById('bkNum').value)||10;
+  if(!title){alert('Enter a bank title.');return;}
+  const msg=document.getElementById('bkMsg');
+  msg.textContent='Saving...'; msg.style.color='var(--muted)'; msg.style.display='inline';
+  const result=await supa('/ab_banks',{method:'POST',body:JSON.stringify({title,ns_level:ns,num_questions:num})});
+  if(result&&result[0]){
+    document.getElementById('bkTitle').value='';
+    msg.textContent='✓ Created'; msg.style.color='#4ee09a';
+    setTimeout(()=>msg.style.display='none',2500);
+    await loadBanks();
+  } else {
+    msg.textContent='✗ Error — check console'; msg.style.color='#e07060';
+    setTimeout(()=>msg.style.display='none',4000);
+  }
+}
+
+async function deleteBank(id){
+  if(!confirm('Delete this bank and all its questions and teams?')) return;
+  await supa('/ab_banks?id=eq.'+id,{method:'DELETE'});
+  await loadBanks();
+  loadQList();
+  loadTeamList();
+}
+
+// ── Questions ──
+function initChoices(){
+  const g=document.getElementById('aqChoices'); g.innerHTML='';
+  for(let i=0;i<4;i++) addChoiceRow();
+}
+function addChoiceRow(){
+  const g=document.getElementById('aqChoices');
+  const i=g.children.length; if(i>=8) return;
+  const l='ABCDEFGH'[i];
+  const row=document.createElement('div'); row.className='ci-row';
+  row.innerHTML=`<span class="ci-lbl">${l}</span>
+    <input type="text" placeholder="Choice ${l}..." class="aq-ct">
+    <input type="checkbox" class="ci-chk" title="Correct">`;
+  g.appendChild(row);
+}
+
+let _uploadedImgUrl=null;
+function previewImg(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const img=document.getElementById('imgPreview');
+    img.src=ev.target.result; img.style.display='block';
+  };
+  reader.readAsDataURL(file);
+  _uploadedImgUrl=file; // store file for upload
+}
+
+async function saveQuestion(){
+  const bankId=document.getElementById('qBankSel').value;
+  if(!bankId){alert('Select a bank first.');return;}
+  const qText=document.getElementById('aqQ').value.trim();
+  if(!qText){alert('Enter question text.');return;}
+  const multi=document.getElementById('aqMulti').checked;
+  const rows=document.querySelectorAll('#aqChoices .ci-row');
+  const choices=[],answer=[];
+  rows.forEach((row,i)=>{
+    const txt=row.querySelector('.aq-ct').value.trim();
+    const chk=row.querySelector('.ci-chk').checked;
+    if(!txt) return;
+    const l='ABCDEFGH'[i];
+    choices.push({l,t:txt});
+    if(chk) answer.push(l);
+  });
+  if(choices.length<2){alert('Add at least 2 choices.');return;}
+  if(!answer.length){alert('Check at least one correct answer.');return;}
+
+  const msg=document.getElementById('qMsg');
+  msg.textContent='Saving...'; msg.style.display='inline'; msg.style.color='var(--muted)';
+
+  // Upload image if provided
+  let imageUrl=null;
+  if(_uploadedImgUrl && typeof _uploadedImgUrl==='object'){
+    const path=`q-${Date.now()}-${_uploadedImgUrl.name.replace(/\s/g,'_')}`;
+    imageUrl=await supaStorage('question-images',_uploadedImgUrl,path);
+  }
+
+  const row={bank_id:parseInt(bankId),question:qText,choices:JSON.stringify(choices),answer:JSON.stringify(answer),multi};
+  if(imageUrl) row.image_url=imageUrl;
+  const result=await supa('/ab_questions',{method:'POST',body:JSON.stringify(row)});
+
+  if(result&&result[0]){
+    document.getElementById('aqQ').value='';
+    document.getElementById('aqMulti').checked=false;
+    document.getElementById('imgPreview').style.display='none';
+    document.getElementById('imgFile').value='';
+    _uploadedImgUrl=null;
+    initChoices();
+    msg.textContent='✓ Saved'; msg.style.color='#4ee09a';
+    setTimeout(()=>msg.style.display='none',2000);
+    loadQList();
+  } else {
+    msg.textContent='Error saving'; msg.style.color='#e07060';
+  }
+}
+
+async function loadQList(){
+  const bankId=document.getElementById('qBankSel')?.value;
+  const el=document.getElementById('qList');
+  if(!bankId){el.innerHTML='<div class="empty">Select a bank above</div>';return;}
+  el.innerHTML='<div class="empty">Loading...</div>';
+  const rows=await supa('/ab_questions?bank_id=eq.'+bankId+'&select=*&order=created_at.asc');
+  if(!rows||!rows.length){el.innerHTML='<div class="empty">No questions in this bank</div>';return;}
+  el.innerHTML=rows.map(q=>{
+    const choices=typeof q.choices==='string'?JSON.parse(q.choices):q.choices;
+    const answer=typeof q.answer==='string'?JSON.parse(q.answer):q.answer;
+    return `<div class="q-item">
+      <div class="q-item-body">
+        <div class="q-item-q">${q.question}${q.image_url?` <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--gold);">📷</span>`:''}</div>
+        <div class="q-item-meta">Answer: ${answer.join(', ')} · ${q.multi?'Multi':'Single'} · ${choices.length} choices</div>
+      </div>
+      <button class="btn btn-red btn-sm" onclick="deleteQuestion(${q.id})">Delete</button>
+    </div>`;
+  }).join('');
+}
+
+async function deleteQuestion(id){
+  if(!confirm('Delete this question?')) return;
+  await supa('/ab_questions?id=eq.'+id,{method:'DELETE'});
+  loadQList();
+}
+
+// ── Teams ──
+async function saveTeam(){
+  const bankId=document.getElementById('tBankSel').value;
+  const name=document.getElementById('tName').value.trim();
+  const code=document.getElementById('tCode').value.trim().toUpperCase();
+  if(!bankId||!name||!code){alert('Fill in all fields.');return;}
+  const result=await supa('/ab_teams',{method:'POST',body:JSON.stringify({bank_id:parseInt(bankId),name,code})});
+  if(result&&result[0]){
+    document.getElementById('tName').value='';
+    document.getElementById('tCode').value='';
+    const msg=document.getElementById('tMsg');
+    msg.style.display='inline'; setTimeout(()=>msg.style.display='none',2000);
+    loadTeamList();
+  } else {
+    alert('Error — code may already be taken.');
+  }
+}
+
+async function loadTeamList(){
+  const filterBank=document.getElementById('tFilterBank')?.value;
+  const path=filterBank?`/ab_teams?bank_id=eq.${filterBank}&select=*,ab_banks(title)&order=created_at.asc`:'/ab_teams?select=*,ab_banks(title)&order=created_at.asc';
+  const rows=await supa(path);
+  const el=document.getElementById('teamList');
+  if(!rows||!rows.length){el.innerHTML='<div class="empty">No teams yet</div>';return;}
+  // Also get sessions to show completion status
+  const sessions=await supa('/ab_sessions?select=team_id,finished_at');
+  const finishedIds=new Set((sessions||[]).filter(s=>s.finished_at).map(s=>s.team_id));
+  el.innerHTML=rows.map(t=>`
+    <div class="team-row">
+      <span class="status-dot ${finishedIds.has(t.id)?'status-done':'status-pending'}"></span>
+      <div class="team-row-name">${t.name} <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);">${t.ab_banks?.title||''}</span></div>
+      <span class="team-code">${t.code}</span>
+      <button class="btn btn-red btn-sm" onclick="deleteTeam(${t.id})">Remove</button>
+    </div>`).join('');
+}
+
+async function deleteTeam(id){
+  if(!confirm('Remove this team?')) return;
+  await supa('/ab_teams?id=eq.'+id,{method:'DELETE'});
+  loadTeamList();
+}
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+// Init choice fields when questions tab is first opened
+document.querySelector('[onclick="aTab(\'questions\')"]').addEventListener('click',()=>{
+  if(!document.getElementById('aqChoices').children.length) initChoices();
+});
+</script>
+</body>
+</html>
